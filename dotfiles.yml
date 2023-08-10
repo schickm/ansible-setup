@@ -1,0 +1,17 @@
+---
+- hosts: all
+  tasks:
+    - name: Ensure ~/vc exists
+      shell: mkdir -p ~/vc
+
+    - name: Clone dotfiles
+      git: repo=git@github.com:schickm/dotfiles.git dest=~/vc/dotfiles force=no update=no
+
+    - name: Symlink files
+      file: path={{ item.path }} src=~/vc/dotfiles/{{ item.src }} state=link
+      tags: symlink
+      with_items:
+        - src: fish/functions
+          path: ~/.config/fish/functions
+        - src: editorconfig
+          path: ~/.editorconfig

@@ -1,0 +1,49 @@
+---
+- hosts: all
+  vars:
+    applications:
+      - meld
+      - stats
+      - ubersicht
+  tasks:
+    - name: Install libraries with homebrew
+      homebrew: name={{ item }} state=present
+      with_items:
+        - fish
+        - aspell
+        - broot
+        - coreutils
+        - diff-so-fancy
+        - direnv
+        - editorconfig
+        - jq
+        - lazydocker
+        - pup
+        - rust
+        - skhd
+        - tig
+        - koekeishiya/formulae/yabai
+        - asdf
+
+    - name: Check for install apps (casks)
+      shell: brew list --cask | grep {{ item }}
+      register: installed_applications
+      with_items: "{{ applications }}"
+      ignore_errors: true
+      tags: casks
+
+    - name: Install apps with brew cask
+      shell: brew install --cask {{ item }}
+      with_items: "{{ applications }}"
+      when: item not in installed_applications.results|map(attribute='stdout')
+      tags: casks
+
+    - name: Start yabai with Launchd
+      shell: yabai --start-service
+      tags: services
+
+    - name: Start homebrew services
+      shell: brew services start {{ item }}
+      with_items:
+        - skhd
+      tags: services
