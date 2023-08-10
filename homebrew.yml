@@ -9,21 +9,25 @@
     - name: Install libraries with homebrew
       homebrew: name={{ item }} state=present
       with_items:
-        - fish
         - aspell
         - broot
         - coreutils
+        - curl
         - diff-so-fancy
         - direnv
         - editorconfig
+        - fish
+        - git
         - jq
+        - koekeishiya/formulae/skhd
+        - koekeishiya/formulae/yabai
         - lazydocker
         - pup
         - rust
         - skhd
+        - tree
+        - watch
         - tig
-        - koekeishiya/formulae/yabai
-        - asdf
 
     - name: Check for install apps (casks)
       shell: brew list --cask | grep {{ item }}

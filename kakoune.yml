@@ -1,0 +1,24 @@
+---
+- hosts: all
+  vars_prompt:
+    - name: gittag
+      prompt: What tag would you like to checkout? Releases available at https://github.com/mawww/kakoune/releases
+      private: false
+  tasks:
+    - name: Clone
+      ansible.builtin.git:
+        repo: git@github.com:mawww/kakoune.git
+        dest: ~/vc/kakoune
+        force: true
+        version: "{{ gittag }}"
+
+    - name: Build
+      community.general.make:
+        chdir: ~/vc/kakoune/src
+
+    - name: Link binary
+      ansible.builtin.file:
+        src: ~/vc/kakoune/src/kak
+        dest: ~/.local/bin/kak
+        state: link
+      tags: symlink

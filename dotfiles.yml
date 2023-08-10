@@ -1,8 +1,24 @@
 ---
 - hosts: all
   tasks:
-    - name: Ensure ~/vc exists
-      shell: mkdir -p ~/vc
+    - name: Ensure standard dirs exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - ~/vc
+        - ~/.config/kak
+        - ~/.config/skhd
+        - ~/.config/yabai
+        - ~/.local/bin
+      tags: symlink
+
+    - name: Ensure ssh dir exists
+      ansible.builtin.file:
+        path: ~/.ssh
+        state: directory
+        mode: "0700"
+      tags: symlink
 
     - name: Clone dotfiles
       git: repo=git@github.com:schickm/dotfiles.git dest=~/vc/dotfiles force=no update=no
@@ -15,3 +31,13 @@
           path: ~/.config/fish/functions
         - src: editorconfig
           path: ~/.editorconfig
+        - src: kakrc
+          path: ~/.config/kak/kakrc
+        - src: skhdrc
+          path: ~/.config/skhd/skhdrc
+        - src: yabairc
+          path: ~/.config/yabai/yabairc
+        - src: tigrc
+          path: ~/.tigrc
+        - src: ssh/config
+          path: ~/.ssh/config
