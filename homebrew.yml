@@ -28,6 +28,7 @@
         - tree
         - watch
         - tig
+        - yamllint
 
     - name: Check for install apps (casks)
       shell: brew list --cask | grep {{ item }}
